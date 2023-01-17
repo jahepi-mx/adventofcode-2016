@@ -15,37 +15,95 @@ public class Day19 {
             list.add(line);
         }
         reader.close();
+        
         Day19 day = new Day19();
-        System.out.println("Part 1: " + day.part1(list));
-        System.out.println("Part 2: " + day.part2(list));
+        System.out.println("Part 1: " + day.part1(3017957));
+        System.out.println("Part 2: " + day.part2(3017957));
+    }
+    
+    private int part1(int sizeParam) {
+        size = sizeParam;
+        MyNode root = null, prev = null;
+        for (int i = 1; i <= size; i++) {
+            MyNode node = new MyNode();
+            node.value = i;
+            node.prev = prev;
+            if (prev != null) {
+                prev.next = node;
+            }
+            prev = node;
+            root = root == null ? node : root;
+            root.prev = node;
+        }
+        root.prev.next = root;
+        while (root != root.next) {
+            remove(root.next);
+            root = root.next;
+        }
+        return root.value;
     }
 
-    private int part1(ArrayList<String> list) {
-        /*
-          
-          1 2 3 4 5
-                1
-                2
-              1 5
-          2 4 2 4
-          1 3 5 3
-          
-          
-          
-          1 2 3 4 5 6 7
-                    6
-                    5
-                    4
-                  6 3
-                1 5 1
-          2 4 6 2 4 2
-          1 3 5 7 3 7 
-           
-         */
-        return 0;
+    int size = 0;
+    private int part2(ArrayList<String> list, int sizeParam) {
+        size = sizeParam;
+        MyNode root = null, prev = null;
+        for (int i = 1; i <= size; i++) {
+            MyNode node = new MyNode();
+            node.value = i;
+            node.prev = prev;
+            if (prev != null) {
+                prev.next = node;
+            }
+            prev = node;
+            root = root == null ? node : root;
+            root.prev = node;
+        }
+        root.prev.next = root;
+        while (size > 1) {
+            int moves = size / 2;
+            MyNode tmp = root;
+            for (int a = moves; a >= 1; a--) {
+                tmp = tmp.next;
+            }
+            remove(tmp);
+            root = root.next;
+        }
+        
+        return root.value;
     }
-
-    private int part2(ArrayList<String> list) {
-        return 0;
+    
+    private void remove(MyNode node) {
+        MyNode prev = node.prev;
+        MyNode next = node.next;
+        prev.next = next;
+        next.prev = prev;
+        size--;
+    }
+    
+    class MyNode {
+        int value;
+        MyNode prev, next;
+    }
+    
+    // https://oeis.org/A334473
+    private int highestPower(int n) {
+        int option = 0;
+        while (Math.pow(3, option) <= n) {
+            option++;
+        }
+        return (int) Math.pow(3, option - 1);
+    }
+    
+    private int part2(int n) {
+        int x = highestPower(n);
+        if (x == n) {
+            return x;
+        } else {
+            if (n < 2 * x) {
+                return n % x;
+            } else {
+                return x + 2 * (n % x);
+            }
+        }
     }
 }
